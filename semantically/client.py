@@ -21,7 +21,6 @@ class SemanticClient:
     ) -> None:
         self.api_key: str = key
         self.api_url = urljoin(host, api_prefix)
-        print(self.api_url)
 
     def send_get_request(self, path: str, params: Dict[str, str]) -> Tuple[int, str]:
         """sends a get request to the Semantic Scholar API and returns the status code

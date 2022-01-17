@@ -27,7 +27,6 @@ class SemanticAsyncRequest:
         self.api_key: str = key
         self.api_url = parse.urljoin(host, api_prefix)
         self.header = {}
-        print(self.api_url)
 
     def _query_builder(
         self, base: str, queries: List[str], params: Dict[str, str]
