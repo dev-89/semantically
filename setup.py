@@ -9,5 +9,12 @@ setup(
     license="LICENSE.md",
     description="Semantically is a Python library designed to easily retrieve data from Semantic Scholar.",
     long_description=open("README.md").read(),
-    install_requires=["aiohttp", "Levenshtein", "dacite"],
+    install_requires=[
+        "aiohttp",
+        "Levenshtein",
+        "dacite",
+        "requests",
+        "pylint",
+        "black",
+    ],
 )
