@@ -8,18 +8,21 @@ In the background these requests are run asynchronously so that several requests
 short amount of time.
 """
 
-from typing import Dict, List
+from typing import Dict, List, Union
 
 import dacite
 import Levenshtein as lh
+from attrs import exceptions
 
-from . import async_request, client, config, datastructures, request
+from . import async_request, client, config, datastructures, exceptions, request
 
 
 class Semantically:
-    def __init__(self):
+    def __init__(self, raise_on_empty_result: bool = True):
         self._client: client.SemanticClient = client.SemanticClient()
         self.request: request.SemanticRequest = request.SemanticRequest(self._client)
+        self.raise_on_empty_result = raise_on_empty_result
+
         self.total: int = 0
         self.offset: int = 0
         self.next: int = 0
@@ -46,12 +49,26 @@ class Semantically:
             query=paper_title,
         )
         new_params, data = self.request.query_paper(params)
+        if not data:
+            if self.raise_on_empty_result:
+                raise exceptions.NoResultError(
+                    paper_title, "Semantic Scholar returned no results for the query."
+                )
+            return None
         self.update_query_params(new_params)
         related_titles = [
             dacite.from_dict(data_class=datastructures.Paper, data=paper_dict)
             for paper_dict in data
             if self._is_title_equal(paper_title, paper_dict["title"])
         ]
+
+        if not related_titles:
+            if self.raise_on_empty_result:
+                raise exceptions.NoResultError(
+                    paper_title, "Semantic Scholar results did not match paper title."
+                )
+            return None
+
         sorted_list = sorted(
             related_titles,
             key=lambda d: self._is_title_equal(paper_title, d.title),
@@ -82,6 +99,12 @@ class Semantically:
             query=keyword,
         )
         new_params, data = self.request.query_paper(params)
+        if not data:
+            if self.raise_on_empty_result:
+                raise exceptions.NoResultError(
+                    keyword, "Semantic Scholar returned no results for the query."
+                )
+            return None
         self.update_query_params(new_params)
         return [
             dacite.from_dict(data_class=datastructures.Paper, data=paper_dict)
@@ -142,7 +165,7 @@ class Semantically:
         offset: int = config.DEFAULT_OFFSET,
         limit: int = config.DEFAULT_LIMIT,
         fields: List[str] = config.ALL_DETAILED_AUTHOR_FIELDS,
-    ):
+    ) -> Union[List[datastructures.DetailedAuthor], None]:
         """retrieves authors which hold the given author_name
 
         Args:
@@ -152,7 +175,8 @@ class Semantically:
             fields (List[str], optional): author fields to display. Defaults to config.ALL_DETAILED_AUTHOR_FIELDS.
 
         Returns:
-            [type]: [description]
+            List[datastructures.DetailedAuthor]: list of authors with given name
+            None: if no result is returned and raise_on_empty_result is set to False
         """
         params = self._build_params(
             fields,
@@ -161,6 +185,14 @@ class Semantically:
             query=author_name,
         )
         new_params, data = self.request.query_author(author_name, params)
+
+        if not data:
+            if self.raise_on_empty_result:
+                raise exceptions.NoResultError(
+                    author_name, "Semantic Scholar returned no results for the query."
+                )
+            return None
+
         self.update_query_params(new_params)
         return [
             dacite.from_dict(data_class=datastructures.DetailedAuthor, data=author_dict)

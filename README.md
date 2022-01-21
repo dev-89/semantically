@@ -20,7 +20,7 @@ Semantically relies mainly on
 Semantically can be installed via pip with
 
 ```
-pip install 
+pip install semantically
 ```
 
 ## Examples

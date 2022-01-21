@@ -28,3 +28,13 @@ class InvalidAuthorIDError(Exception):
         self.author_id = author_id
         self.message = message
         super().__init__(message)
+
+
+class NoResultError(Exception):
+    """This error is raised if raise_on_empty_result is set to True and Semantic
+    Scholar retruns an empty response."""
+
+    def __init__(self, request: str, message: str) -> None:
+        self.request = request
+        self.message = message
+        super().__init__(message)

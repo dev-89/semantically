@@ -46,7 +46,7 @@ class SemanticRequest:
             response_dict.get("limit", 0),
             response_dict.get("next", 0),
         )
-        return new_parameters, response_dict["data"]
+        return new_parameters, response_dict.get("data", None)
 
     def get_paper_by_id(self, paper_id: str, fields: List[str]) -> Dict[str, str]:
         """queries the paper according to id

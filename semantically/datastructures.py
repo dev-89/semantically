@@ -1,4 +1,5 @@
-"""This module holds all dataclasses, which are used and returned by Semantically"""
+"""This module holds all dataclasses, which are used and returned by Semantically. The
+structure of all data classes is derived from the Semantic Scholar API."""
 
 from dataclasses import dataclass
 from typing import List, Optional
@@ -14,13 +15,15 @@ class SemanticScholarParameter:
 
 @dataclass
 class Author:
-    authorId: str
+    authorId: Optional[
+        str
+    ]  # note: even though it is always included it does not have to mean that the value is always not None
     name: Optional[str]
 
 
 @dataclass
 class Citation:
-    paperId: str
+    paperId: Optional[str]
     url: Optional[str]
     title: Optional[str]
     venue: Optional[str]
@@ -30,7 +33,9 @@ class Citation:
 
 @dataclass
 class Reference:
-    paperId: str
+    paperId: Optional[
+        str
+    ]  # note: even though it is always included it does not have to mean that the value is always not None
     url: Optional[str]
     title: Optional[str]
     venue: Optional[str]
@@ -40,7 +45,9 @@ class Reference:
 
 @dataclass
 class Paper:
-    paperId: str
+    paperId: Optional[
+        str
+    ]  # note: even though it is always included it does not have to mean that the value is always not None
     externalIds: Optional[dict]
     url: Optional[str]
     title: Optional[str]
@@ -57,7 +64,9 @@ class Paper:
 
 @dataclass
 class DetailedAuthor:
-    authorId: str
+    authorId: Optional[
+        str
+    ]  # note: even though it is always included it does not have to mean that the value is always not None
     externalIds: Optional[dict]
     url: Optional[str]
     name: Optional[str]
@@ -72,7 +81,9 @@ class DetailedAuthor:
 
 @dataclass
 class DetailedPaper:
-    paperId: str
+    paperId: Optional[
+        str
+    ]  # note: even though it is always included it does not have to mean that the value is always not None
     externalIds: Optional[dict]
     url: Optional[str]
     title: Optional[str]
