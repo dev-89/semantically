@@ -12,7 +12,6 @@ from typing import Dict, List, Union
 
 import dacite
 import Levenshtein as lh
-from attrs import exceptions
 
 from . import async_request, client, config, datastructures, exceptions, request
 
