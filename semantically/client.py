@@ -19,8 +19,11 @@ class SemanticClient:
         key: str = config.API_KEY,
         api_prefix: str = config.API_PREFIX,
     ) -> None:
-        self.api_key: str = key
         self.api_url = urljoin(host, api_prefix)
+        self.header = {}
+        if key:
+            self.header = {"x-api-key": key}
+            self.api_url = urljoin(config.PARTNER_SCHOLAR_URL, api_prefix)
 
     def send_get_request(self, path: str, params: Dict[str, str]) -> Tuple[int, str]:
         """sends a get request to the Semantic Scholar API and returns the status code
@@ -34,8 +37,5 @@ class SemanticClient:
             Tuple[int, str]: status code and response body
         """
         url = urljoin(self.api_url, path)
-        header = {}
-        if self.api_key:
-            header = {}
-        resp = requests.get(url=url, params=params, headers=header)
+        resp = requests.get(url=url, params=params, headers=self.header)
         return resp.status_code, resp.text

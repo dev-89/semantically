@@ -1,4 +1,5 @@
 SEMANTIC_SCHOLAR_URL = "https://api.semanticscholar.org/"
+PARTNER_SCHOLAR_URL = "https://partner.semanticscholar.org/v1"
 API_PREFIX = "graph/v1/"
 API_KEY = ""
 

@@ -45,21 +45,25 @@ class Reference:
 
 @dataclass
 class Paper:
+    """Dataclass for semanticscholar paper query results. All given members are modeled after the Semantic
+    Scholar API.
+    """
+
     paperId: Optional[
         str
-    ]  # note: even though it is always included it does not have to mean that the value is always not None
-    externalIds: Optional[dict]
-    url: Optional[str]
-    title: Optional[str]
-    abstract: Optional[str]
-    venue: Optional[str]
-    year: Optional[int]
-    referenceCount: Optional[int]
-    citationCount: Optional[int]
-    influentialCitationCount: Optional[int]
-    isOpenAccess: Optional[bool]
-    fieldsOfStudy: Optional[List[str]]
-    authors: Optional[List[Author]]
+    ] = None  # note: even though it is always included it does not have to mean that the value is always not None
+    externalIds: Optional[dict] = None
+    url: Optional[str] = None
+    title: Optional[str] = None
+    abstract: Optional[str] = None
+    venue: Optional[str] = None
+    year: Optional[int] = None
+    referenceCount: Optional[int] = None
+    citationCount: Optional[int] = None
+    influentialCitationCount: Optional[int] = None
+    isOpenAccess: Optional[bool] = None
+    fieldsOfStudy: Optional[List[str]] = None
+    authors: Optional[List[Author]] = None
 
 
 @dataclass

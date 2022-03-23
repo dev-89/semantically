@@ -17,8 +17,12 @@ from . import async_request, client, config, datastructures, exceptions, request
 
 
 class Semantically:
-    def __init__(self, raise_on_empty_result: bool = True):
-        self._client: client.SemanticClient = client.SemanticClient()
+    """Main interface for semantically library"""
+
+    def __init__(
+        self, raise_on_empty_result: bool = True, api_key: str = config.API_KEY
+    ):
+        self._client: client.SemanticClient = client.SemanticClient(key=api_key)
         self.request: request.SemanticRequest = request.SemanticRequest(self._client)
         self.raise_on_empty_result = raise_on_empty_result
 
@@ -149,15 +153,6 @@ class Semantically:
         data = self.request.get_paper_by_id(paper_id, fields)
         return dacite.from_dict(data_class=datastructures.DetailedPaper, data=data)
 
-    def get_papers_by_id(
-        self, author_id_list: List[str], fields: List[str] = config.DEFAULT_PAPER_FIELDS
-    ):
-        params = self._build_params(fields)
-        async_semantic = async_request.SemanticAsyncRequest()
-        returned_dict = async_semantic.get_paper_by_id(author_id_list, params)
-
-        return self._type_dict(returned_dict, datastructures.DetailedPaper)
-
     def get_author_by_name(
         self,
         author_name: str,
@@ -235,7 +230,7 @@ class Semantically:
             datastructures.DetailedAuthor: author info
         """
         data = self.request.get_paper_by_id(author_id, fields)
-        return dacite.from_dict(data_class=datastructures.DetailedPaper, data=data)
+        return dacite.from_dict(data_class=datastructures.DetailedAuthor, data=data)
 
     def get_authors_by_id(
         self,
@@ -302,10 +297,14 @@ class Semantically:
         """
         typed_dict = {}
         for key, value in dict_to_type.items():
-            typed_dict[key] = [
-                dacite.from_dict(data_class=target_type, data=paper_dict)
-                for paper_dict in value
-            ]
+            try:
+                typed_dict[key] = [
+                    dacite.from_dict(data_class=target_type, data=paper_dict)
+                    for paper_dict in value
+                ]
+            except TypeError as te:
+                if self.raise_on_empty_result:
+                    raise te
 
         return typed_dict
 
